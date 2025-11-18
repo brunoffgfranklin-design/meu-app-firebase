@@ -1,47 +1,95 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Controle de Finanças</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Finanças</title>
+    <link rel="stylesheet" href="style.css">
 
-  <!-- Firebase SDK 8 (compat para sites estáticos simples) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- Firebase SDK 8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
+
 <body>
-  <div class="container">
+<div class="container">
+
     <h1>Controle de Finanças</h1>
 
     <!-- LOGIN -->
     <div id="loginArea">
-      <button id="googleLogin">Entrar com Google</button>
+        <button id="googleLogin">Entrar com Google</button>
     </div>
 
-    <!-- ÁREA LOGADO -->
+    <!-- ÁREA LOGADA -->
     <div id="appArea" style="display:none">
-      <div class="topBar">
-        <span id="userName"></span>
-        <button id="logoutBtn">Sair</button>
-      </div>
 
-      <!-- PRIVACIDADE -->
-      <button id="togglePrivacidade">Ocultar valores 🔒</button>
+        <div class="topBar">
+            <span id="userName"></span>
+            <button id="logoutBtn">Sair</button>
+        </div>
 
-      <h2>Nova Despesa</h2>
-      <input id="descricao" placeholder="Descrição">
-      <input id="valor" type="number" placeholder="Valor">
-      <input id="data" type="date">
-      <label><input type="checkbox" id="repetirMensal"> Repetir mensalmente</label>
-      <button id="salvarBtn">Salvar</button>
+        <!-- PRIVACIDADE -->
+        <button id="togglePrivacidade">Ocultar valores 🔒</button>
 
-      <h2>Despesas Registradas</h2>
-      <ul id="lista"></ul>
+        <!-- ========================= -->
+        <!--      RENDAS               -->
+        <!-- ========================= -->
+        <h2>Rendas</h2>
+
+        <div class="box">
+            <h3>Adicionar Renda</h3>
+            <select id="tipoRenda">
+                <option value="principal">Renda principal</option>
+                <option value="secundaria">Renda secundária</option>
+                <option value="outras">Outras rendas</option>
+            </select>
+
+            <input id="valorRenda" type="number" placeholder="Valor da renda">
+            <input id="dataRenda" type="date">
+            <button id="salvarRendaBtn">Salvar Renda</button>
+        </div>
+
+        <h3>Rendas do mês</h3>
+        <ul id="listaRendas"></ul>
+
+        <!-- ========================= -->
+        <!--      CONTAS MENSAIS       -->
+        <!-- ========================= -->
+        <h2>Contas Mensais</h2>
+
+        <div class="box">
+            <h3>Nova Conta</h3>
+            <input id="descricaoConta" placeholder="Descrição da conta">
+            <input id="valorConta" type="number" placeholder="Valor">
+            <input id="vencimentoConta" type="date">
+            
+            <label><input type="checkbox" id="contaPaga"> Pago?</label>
+
+            <button id="salvarContaBtn">Salvar Conta</button>
+        </div>
+
+        <h3>Contas do mês</h3>
+        <ul id="listaContas"></ul>
+
+        <!-- ========================= -->
+        <!-- RESUMO MENSAL -->
+        <!-- ========================= -->
+        <h2>Resumo do Mês</h2>
+
+        <div id="resumo">
+            <p>Total de rendas: <span id="totalRendas"></span></p>
+            <p>Total previsto de contas: <span id="totalPrevisto"></span></p>
+            <p>Total pago: <span id="totalPago"></span></p>
+            <p><strong>Diferença:</strong> <span id="totalDiferenca"></span></p>
+        </div>
+
     </div>
-  </div>
 
-  <script src="app.js"></script>
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
