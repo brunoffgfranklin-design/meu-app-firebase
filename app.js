@@ -1,6 +1,6 @@
-// ========================================
-// CONFIGURAÇÃO DO FIREBASE
-// ========================================
+// ===============================
+// CONFIG FIREBASE
+// ===============================
 const firebaseConfig = {
   apiKey: "AIzaSyCztzjnqsASSgQAGJNNyp0XLzAeeEKclPY",
   authDomain: "controle-de-financas-8bfdf.firebaseapp.com",
@@ -8,87 +8,144 @@ const firebaseConfig = {
   projectId: "controle-de-financas-8bfdf",
   storageBucket: "controle-de-financas-8bfdf.firebasestorage.app",
   messagingSenderId: "269562705866",
-  appId: "1:269562705866:web:58aeae4840ec2c6c7cc133",
-  measurementId: "G-BZE9L6267J"
+  appId: "1:269562705866:web:58aeae4840ec2c6c7cc133"
 };
 
-// Inicializa
 firebase.initializeApp(firebaseConfig);
 
-// ========================================
-// AUTENTICAÇÃO
-// ========================================
 const auth = firebase.auth();
+const db   = firebase.database();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-// Login Google
-function loginGoogle() {
+// ===============================
+// LOGIN
+// ===============================
+document.getElementById("googleLogin").onclick = () => {
   auth.signInWithPopup(provider)
-    .then(result => {
-      console.log("Logado:", result.user);
+    .catch(e => alert("Erro ao logar: " + e.message));
+};
 
-      document.getElementById("loginArea").style.display = "none";
-      document.getElementById("appArea").style.display = "block";
+document.getElementById("logoutBtn").onclick = () => {
+  auth.signOut();
+};
 
-      document.getElementById("userName").innerText = result.user.displayName;
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Erro ao logar: " + err.message);
-    });
-}
-
-// Logout
-function logout() {
-  auth.signOut().then(() => {
-    document.getElementById("loginArea").style.display = "block";
-    document.getElementById("appArea").style.display = "none";
-  });
-}
-
-// Monitor login/logout
+// MONITOR DE LOGIN
 auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById("loginArea").style.display = "none";
-    document.getElementById("appArea").style.display = "block";
+    document.getElementById("appArea").style.display   = "block";
     document.getElementById("userName").innerText = user.displayName;
+
+    carregarDespesas();
   } else {
     document.getElementById("loginArea").style.display = "block";
-    document.getElementById("appArea").style.display = "none";
+    document.getElementById("appArea").style.display   = "none";
   }
 });
 
-// ========================================
-// REALTIME DATABASE
-// ========================================
-const db = firebase.database();
+// ===============================
+// CRUD DE DESPESAS
+// ===============================
+document.getElementById("salvarBtn").onclick = salvarDespesa;
 
-// Salvar valor
-function salvarValor() {
-  const valor = document.getElementById("valor").value;
-  const saque = document.getElementById("valorSaque").value;
+function salvarDespesa() {
   const user = auth.currentUser;
+  if (!user) return;
 
-  if (!user) {
-    alert("Faça login primeiro!");
+  const descricao = document.getElementById("descricao").value.trim();
+  const valor     = document.getElementById("valor").value;
+  const liquido   = document.getElementById("valorLiquido").value;
+  const data      = document.getElementById("data").value;
+
+  if (!descricao || !valor || !data) {
+    alert("Preencha todos os campos obrigatórios!");
     return;
   }
 
-  const registro = {
-    valor: valor,
-    saque: saque,
-    data: new Date().toISOString()
-  };
+  const id = db.ref().push().key;
 
-  db.ref("usuarios/" + user.uid + "/lancamentos").push(registro);
+  db.ref(`despesas/${user.uid}/${id}`).set({
+    id,
+    descricao,
+    valor: Number(valor),
+    liquido: Number(liquido || 0),
+    data
+  });
 
-  alert("Valor salvo!");
-
+  document.getElementById("descricao").value = "";
   document.getElementById("valor").value = "";
-  document.getElementById("valorSaque").value = "";
+  document.getElementById("valorLiquido").value = "";
+  document.getElementById("data").value = "";
+
+  carregarDespesas();
 }
 
-// Conecta funções aos botões
-document.getElementById("googleLogin").onclick = loginGoogle;
-document.getElementById("logoutBtn").onclick = logout;
-document.getElementById("salvarBtn").onclick = salvarValor;
+// LISTAR
+function carregarDespesas() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  db.ref(`despesas/${user.uid}`).orderByChild("data").on("value", snapshot => {
+    const lista = document.getElementById("listaDespesas");
+    lista.innerHTML = "";
+
+    const dados = snapshot.val();
+    if (!dados) return;
+
+    Object.values(dados).forEach(item => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <span class="descricao">${item.descricao}</span>
+        <span class="valor" data-valor="${item.valor}">R$ ${item.valor.toFixed(2)}</span>
+        <span class="data">${item.data}</span>
+        <button onclick="editarDespesa('${item.id}')">Editar</button>
+        <button onclick="excluirDespesa('${item.id}')">Excluir</button>
+      `;
+      lista.appendChild(li);
+    });
+  });
+}
+
+// EDITAR
+function editarDespesa(id) {
+  const user = auth.currentUser;
+  db.ref(`despesas/${user.uid}/${id}`).once("value")
+    .then(s => {
+      const item = s.val();
+
+      document.getElementById("descricao").value = item.descricao;
+      document.getElementById("valor").value     = item.valor;
+      document.getElementById("valorLiquido").value = item.liquido;
+      document.getElementById("data").value      = item.data;
+
+      excluirDespesa(id); // sobrescreve ao salvar
+    });
+}
+
+// EXCLUIR
+function excluirDespesa(id) {
+  const user = auth.currentUser;
+  if (!confirm("Excluir este item?")) return;
+
+  db.ref(`despesas/${user.uid}/${id}`).remove();
+}
+
+// ===============================
+// PRIVACIDADE — Camuflar valores
+// ===============================
+let oculto = false;
+
+document.getElementById("btnPrivacidade").onclick = () => {
+  oculto = !oculto;
+  document.querySelectorAll(".valor").forEach(el => {
+    if (oculto) {
+      el.innerText = "R$ •••••";
+    } else {
+      const v = Number(el.dataset.valor);
+      el.innerText = "R$ " + v.toFixed(2);
+    }
+  });
+
+  document.getElementById("btnPrivacidade").innerText =
+    oculto ? "Mostrar Valores" : "Ocultar Valores";
+};
