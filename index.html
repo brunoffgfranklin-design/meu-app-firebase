@@ -3,28 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login com Google - Firebase</title>
+    <title>Controle de Finanças</title>
     <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDK 8 (compatível com sites simples) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
+
 <body>
+    <div class="container">
+        <h1>Controle de Finanças</h1>
 
-    <div id="app">
-        <h1>Login com Google</h1>
-        <button id="googleLogin">Entrar com Google</button>
+        <!-- Login -->
+        <div id="loginArea">
+            <button id="googleLogin">Entrar com Google</button>
+        </div>
 
-        <div id="userBox" style="display: none;">
-            <img id="userPhoto">
-            <h2 id="userName"></h2>
-            <p id="userEmail"></p>
+        <!-- Área do app -->
+        <div id="appArea" style="display: none;">
+            <p id="userName"></p>
             <button id="logoutBtn">Sair</button>
+
+            <h2>Lançamentos</h2>
+            <input type="number" id="valor" placeholder="Valor do dia">
+            <input type="number" id="valorSaque" placeholder="Valor para saque (líquido)">
+            <button id="salvarBtn">Salvar</button>
+
+            <h3>Entradas Registradas</h3>
+            <ul id="lista"></ul>
         </div>
     </div>
-
-    <!-- Firebase compat (FUNCIONA em qualquer site estático) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script src="app.js"></script>
 </body>
 </html>
+
+
