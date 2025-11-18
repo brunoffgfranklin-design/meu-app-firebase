@@ -1,38 +1,53 @@
 body {
-    background: #f1f1f1;
     font-family: Arial, sans-serif;
+    background: #f1f1f1;
     display: flex;
     justify-content: center;
-    margin-top: 80px;
+    padding-top: 40px;
 }
 
-#app {
+.container {
     background: white;
-    padding: 30px;
-    width: 350px;
+    padding: 25px;
+    width: 380px;
     border-radius: 10px;
-    text-align: center;
     box-shadow: 0 0 10px #ccc;
 }
 
+h1, h2, h3 {
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+}
+
 button {
-    width: 80%;
+    width: 100%;
     padding: 12px;
-    margin-top: 15px;
-    border: none;
-    border-radius: 5px;
     background: #4285F4;
+    border: none;
     color: white;
     font-size: 16px;
     cursor: pointer;
+    margin-top: 10px;
+    border-radius: 6px;
 }
 
 button:hover {
-    background: #3367D6;
+    background: #3367d6;
 }
 
-#userPhoto {
-    width: 80px;
-    border-radius: 50%;
-    margin-top: 20px;
+ul {
+    padding: 0;
+}
+
+li {
+    list-style: none;
+    background: #eee;
+    padding: 8px;
+    margin-top: 4px;
+    border-radius: 4px;
 }
