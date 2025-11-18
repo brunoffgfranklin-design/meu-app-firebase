@@ -3,44 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Firebase - Login Google</title>
+    <title>Login com Google - Firebase</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Firebase SDK (Compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-database-compat.js"></script>
 </head>
-
 <body>
 
     <div id="app">
+        <h1>Login com Google</h1>
+        <button id="googleLogin">Entrar com Google</button>
 
-        <h1>Firebase Login com Google</h1>
-
-        <button id="googleLoginBtn">Entrar com Google</button>
-
-        <div id="userInfo" class="hidden">
+        <div id="userBox" style="display: none;">
             <img id="userPhoto">
-            <p id="userName"></p>
+            <h2 id="userName"></h2>
             <p id="userEmail"></p>
             <button id="logoutBtn">Sair</button>
         </div>
-
-        <div id="dbBox" class="hidden">
-            <h2>Enviar dado ao Realtime Database</h2>
-            <input id="dataInput" placeholder="Digite algo..." />
-            <button id="sendBtn">Enviar</button>
-
-            <h3>Último dado salvo:</h3>
-            <p id="lastValue">---</p>
-        </div>
-
     </div>
 
-    <script src="app.js"></script>
+    <!-- Firebase compat (FUNCIONA em qualquer site estático) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+    <script src="app.js"></script>
 </body>
 </html>
-
-
