@@ -1,52 +1,36 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Finanças</title>
-    <link rel="stylesheet" href="style.css">
+// ==========================
+// SALVAR DESPESA
+// ==========================
+document.getElementById("salvarBtn").onclick = () => {
 
-    <!-- Firebase SDK 8 -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-</head>
+    const user = auth.currentUser;
+    if (!user) return;
 
-<body>
-    <div class="container">
+    const descricao = document.getElementById("descricao").value;
+    const valor = document.getElementById("valor").value;
+    const data = document.getElementById("data").value;
+    const repetir = document.getElementById("repetirMensal").checked;
 
-        <h1>Controle de Finanças</h1>
+    if (!descricao || !valor || !data) {
+        alert("Preencha todos os campos");
+        return;
+    }
 
-        <!-- LOGIN -->
-        <div id="loginArea">
-            <button id="googleLogin">Entrar com Google</button>
-        </div>
+    // 🔥 CORREÇÃO AQUI
+    const ref = db.ref(`despesas/${user.uid}`).push();
+    const id = ref.key;
 
-        <!-- ÁREA LOGADO -->
-        <div id="appArea" style="display:none">
+    ref.set({
+        descricao,
+        valor,
+        data,
+        repetir
+    }).then(() => {
 
-            <div class="topBar">
-                <span id="userName"></span>
-                <button id="logoutBtn">Sair</button>
-            </div>
+        document.getElementById("descricao").value = "";
+        document.getElementById("valor").value = "";
+        document.getElementById("data").value = "";
 
-            <!-- PRIVACIDADE -->
-            <button id="togglePrivacidade">Ocultar valores 🔒</button>
-
-            <h2>Nova Despesa</h2>
-            <input id="descricao" placeholder="Descrição">
-            <input id="valor" type="number" placeholder="Valor">
-            <input id="data" type="date">
-            <label>
-                <input type="checkbox" id="repetirMensal"> Repetir mensalmente
-            </label>
-            <button id="salvarBtn">Salvar</button>
-
-            <h2>Despesas Registradas</h2>
-            <ul id="lista"></ul>
-        </div>
-    </div>
-
-    <script src="app.js"></script>
-</body>
-</html>
+        carregarDespesas();
+    });
+};
