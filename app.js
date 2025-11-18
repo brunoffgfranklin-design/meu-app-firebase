@@ -10,71 +10,51 @@ const firebaseConfig = {
   measurementId: "G-BZE9L6267J"
 };
 
-// Inicializar Firebase
+// Inicializa Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Referência dos serviços
+// Referências
 const auth = firebase.auth();
 const db = firebase.database();
 
+// Botões
+const googleBtn = document.getElementById("googleLogin");
+const logoutBtn = document.getElementById("logoutBtn");
 
-// ------------------------------------------------
-// 🚀 LOGIN COM GOOGLE
-// ------------------------------------------------
-document.getElementById("googleLoginBtn").addEventListener("click", () => {
+// Login com Google
+googleBtn.onclick = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-
     auth.signInWithPopup(provider)
         .then(result => {
             const user = result.user;
-            mostrarUsuario(user);
+
+            // Exibe na tela
+            document.getElementById("userName").innerText = user.displayName;
+            document.getElementById("userEmail").innerText = user.email;
+            document.getElementById("userPhoto").src = user.photoURL;
+
+            document.getElementById("googleLogin").style.display = "none";
+            document.getElementById("userBox").style.display = "block";
+
+            // Salva no Realtime Database
+            db.ref("users/" + user.uid).set({
+                name: user.displayName,
+                email: user.email,
+                photo: user.photoURL,
+                lastLogin: new Date().toISOString()
+            });
+
         })
-        .catch(err => alert("Erro no login: " + err.message));
-});
+        .catch(err => {
+            alert("Erro ao logar: " + err.message);
+        });
+};
 
+// Logout
+logoutBtn.onclick = () => {
+    auth.signOut().then(() => {
+        document.getElementById("googleLogin").style.display = "block";
+        document.getElementById("userBox").style.display = "none";
+    });
+};
 
-// ------------------------------------------------
-// 👤 MOSTRAR USUÁRIO LOGADO
-// ------------------------------------------------
-function mostrarUsuario(user) {
-    document.getElementById("googleLoginBtn").classList.add("hidden");
-
-    document.getElementById("userPhoto").src = user.photoURL;
-    document.getElementById("userName").innerText = user.displayName;
-    document.getElementById("userEmail").innerText = user.email;
-
-    document.getElementById("userInfo").classList.remove("hidden");
-    document.getElementById("dbBox").classList.remove("hidden");
-}
-
-
-// ------------------------------------------------
-// 🚪 LOGOUT
-// ------------------------------------------------
-document.getElementById("logoutBtn").addEventListener("click", () => {
-    auth.signOut();
-    location.reload();
-});
-
-
-// ------------------------------------------------
-// ✍️ ENVIAR DADO PARA REALTIME DATABASE
-// ------------------------------------------------
-document.getElementById("sendBtn").addEventListener("click", () => {
-    const value = document.getElementById("dataInput").value;
-
-    if (value.trim() === "") return;
-
-    db.ref("ultimoValor").set(value);
-
-    document.getElementById("dataInput").value = "";
-});
-
-
-// ------------------------------------------------
-// 📡 LER EM TEMPO REAL
-// ------------------------------------------------
-db.ref("ultimoValor").on("value", snapshot => {
-    const val = snapshot.val();
-    document.getElementById("lastValue").innerText = val ?? "---";
-});
