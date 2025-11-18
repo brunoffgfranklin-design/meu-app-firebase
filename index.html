@@ -14,39 +14,39 @@
 
 <body>
     <div class="container">
+
         <h1>Controle de Finanças</h1>
 
-        <!-- Login -->
+        <!-- LOGIN -->
         <div id="loginArea">
             <button id="googleLogin">Entrar com Google</button>
         </div>
 
-        <!-- Área do app -->
+        <!-- ÁREA LOGADO -->
         <div id="appArea" style="display:none">
 
-            <p id="userName"></p>
-            <button id="logoutBtn">Sair</button>
+            <div class="topBar">
+                <span id="userName"></span>
+                <button id="logoutBtn">Sair</button>
+            </div>
+
+            <!-- PRIVACIDADE -->
+            <button id="togglePrivacidade">Ocultar valores 🔒</button>
 
             <h2>Nova Despesa</h2>
-            <input type="text" id="descricao" placeholder="Descrição">
-            <input type="number" id="valor" placeholder="Valor bruto">
-            <input type="number" id="valorLiquido" placeholder="Valor líquido">
-            <input type="date" id="data">
+            <input id="descricao" placeholder="Descrição">
+            <input id="valor" type="number" placeholder="Valor">
+            <input id="data" type="date">
+            <label>
+                <input type="checkbox" id="repetirMensal"> Repetir mensalmente
+            </label>
             <button id="salvarBtn">Salvar</button>
 
-            <hr>
-
-            <button id="btnPrivacidade">Ocultar Valores</button>
-
-            <h3>Minhas Despesas</h3>
-            <ul id="listaDespesas"></ul>
+            <h2>Despesas Registradas</h2>
+            <ul id="lista"></ul>
         </div>
     </div>
 
     <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
