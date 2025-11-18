@@ -6,7 +6,7 @@
     <title>Controle de Finanças</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- Firebase SDK 8 (compatível com sites simples) -->
+    <!-- Firebase SDK 8 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -22,22 +22,31 @@
         </div>
 
         <!-- Área do app -->
-        <div id="appArea" style="display: none;">
+        <div id="appArea" style="display:none">
+
             <p id="userName"></p>
             <button id="logoutBtn">Sair</button>
 
-            <h2>Lançamentos</h2>
-            <input type="number" id="valor" placeholder="Valor do dia">
-            <input type="number" id="valorSaque" placeholder="Valor para saque (líquido)">
+            <h2>Nova Despesa</h2>
+            <input type="text" id="descricao" placeholder="Descrição">
+            <input type="number" id="valor" placeholder="Valor bruto">
+            <input type="number" id="valorLiquido" placeholder="Valor líquido">
+            <input type="date" id="data">
             <button id="salvarBtn">Salvar</button>
 
-            <h3>Entradas Registradas</h3>
-            <ul id="lista"></ul>
+            <hr>
+
+            <button id="btnPrivacidade">Ocultar Valores</button>
+
+            <h3>Minhas Despesas</h3>
+            <ul id="listaDespesas"></ul>
         </div>
     </div>
 
     <script src="app.js"></script>
 </body>
 </html>
+
+
 
 
