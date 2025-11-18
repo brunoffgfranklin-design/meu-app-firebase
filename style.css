@@ -1,68 +1,79 @@
 body {
-  background: #f3f3f3;
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+    background: #f3f3f3;
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-  max-width: 450px;
-  margin: auto;
-  background: #fff;
-  padding: 20px;
-  margin-top: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px #ccc;
+    max-width: 480px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 12px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    text-align: center;
+    color: #333;
 }
 
 button {
-  padding: 10px;
-  border: none;
-  background: #008cff;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 10px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #008cff;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: 15px;
 }
 
 button:hover {
-  background: #006ed3;
+    background: #006ed3;
 }
 
 input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.card {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: inset 0px 0px 5px #ddd;
+    margin-bottom: 15px;
 }
 
 ul {
-  list-style: none;
-  padding: 0;
+    list-style: none;
+    padding: 0;
 }
 
 li {
-  background: #eaeaea;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    background: #eaeaea;
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .privado {
-  filter: blur(6px);
+    filter: blur(6px);
 }
 
 .smallBtn {
-  background: #333;
-  padding: 5px 8px;
-  font-size: 12px;
-  color: white;
-  border-radius: 6px;
-  margin-left: 6px;
-  border: none;
-  cursor: pointer;
+    background: #444;
+    padding: 6px 9px;
+    font-size: 12px;
+    border-radius: 6px;
 }
