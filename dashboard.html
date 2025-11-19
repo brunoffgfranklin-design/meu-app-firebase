@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Controle Financeiro</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dashboard-body">
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
+        <div class="logo">💰 CF</div>
+
+        <nav>
+            <a href="dashboard.html" class="active">📊 Dashboard</a>
+            <a href="rendas.html">💵 Rendas</a>
+            <a href="contas.html">🧾 Contas Mensais</a>
+            <a href="alertas.html">⏰ Alertas</a>
+            <a href="graficos.html">📈 Gráficos</a>
+        </nav>
+
+        <button class="logout-btn">Sair</button>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-container">
+
+        <h1 class="page-title">Dashboard</h1>
+
+        <div class="cards">
+            <div class="card">
+                <h3>Renda Total</h3>
+                <p class="valor">R$ 0,00</p>
+            </div>
+
+            <div class="card">
+                <h3>Despesas Previstas</h3>
+                <p class="valor">R$ 0,00</p>
+            </div>
+
+            <div class="card">
+                <h3>Despesas Pagas</h3>
+                <p class="valor">R$ 0,00</p>
+            </div>
+
+            <div class="card highlight">
+                <h3>Saldo do Mês</h3>
+                <p class="valor">R$ 0,00</p>
+            </div>
+        </div>
+
+        <section class="lista-section">
+            <h2>Próximos vencimentos</h2>
+            <ul class="lista-vencimentos" id="listaVencimentos">
+                <!-- preenchido via JS futuramente -->
+            </ul>
+        </section>
+
+    </main>
+
+</body>
+</html>
