@@ -4,13 +4,13 @@
 // ==========================
 const firebaseConfig = {
   apiKey: "AIzaSyCztzjnqsASSgQAGJNNyp0XLzAeeEKclPY",
-  authDomain: "controle-de-financas-8bfdf.firebaseapp.com",
-  databaseURL: "https://controle-de-financas-8bfdf-default-rtdb.firebaseio.com",
-  projectId: "controle-de-financas-8bfdf",
-  storageBucket: "controle-de-financas-8bfdf.firebasestorage.app",
-  messagingSenderId: "269562705866",
-  appId: "1:269562705866:web:58aeae4840ec2c6c7cc133",
-  measurementId: "G-BZE9L6267J"
+    authDomain: "controle-de-financas-8bfdf.firebaseapp.com",
+    databaseURL: "https://controle-de-financas-8bfdf-default-rtdb.firebaseio.com",
+    projectId: "controle-de-financas-8bfdf",
+    storageBucket: "controle-de-financas-8bfdf.appspot.com",
+    messagingSenderId: "269562705866",
+    appId: "1:269562705866:web:58aeae4840ec2c6c7cc133",
+    measurementId: "G-BZE9L6267J"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -296,3 +296,4 @@ window.editarDespesa = editarDespesa;
 
 
 console.log('app.js carregado');
+
