@@ -48,4 +48,21 @@
             e.preventDefault();
 
             const email = loginForm[0].value;
-            const p
+            const password = loginForm[1].value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    window.location.href = "dashboard.html";
+                })
+                .catch(err => alert(err.message));
+        });
+
+        // 🌙 Alternar tema
+        document.getElementById('toggleTheme').addEventListener('click', () => {
+            document.body.dataset.theme =
+                document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        });
+    </script>
+
+</body>
+</html>
