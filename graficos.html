@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gráficos e Análises</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tema e Sidebar -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const body = document.body;
+
+            // Recuperar tema salvo
+            const savedTheme = localStorage.getItem("theme") || "light";
+            body.classList.toggle("dark-theme", savedTheme === "dark");
+
+            // Aplicar colapso salvo
+            const savedCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+            if (savedCollapsed) document.querySelector(".sidebar")?.classList.add("collapsed");
+        });
+    </script>
+</head>
+
+<body class="dashboard-body">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">MeuApp</h2>
+        <nav>
+            <a href="dashboard.html">🏠 Início</a>
+            <a href="rendas.html">💰 Rendas</a>
+            <a href="contas.html">📋 Contas</a>
+            <a href="alertas.html">🔔 Alertas</a>
+            <a href="#" class="active">📊 Gráficos</a>
+            <a href="#">⚙️ Configurações</a>
+            <a href="#" id="logoutBtn">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <button id="toggleSidebar" class="btn-toggle">☰</button>
+            <button id="toggleTheme" class="btn-toggle">🌓</button>
+            <h1>Gráficos e Análises</h1>
+            <p>Visualize suas informações de forma clara e intuitiva</p>
+        </header>
+
+        <!-- AREA 1 -->
+        <section class="form-section">
+            <h2>Resumo Geral</h2>
+            <p>Aqui você poderá visualizar gráficos das suas contas, rendas e balanço geral.</p>
+        </section>
+
+        <!-- ÁREA DO GRÁFICO -->
+        <section class="table-section">
+            <h2>Gráfico Mensal</h2>
+
+            <div style="width: 100%; max-width: 700px; margin: auto;">
+                <canvas id="graficoMensal"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <!-- Chart.js (para os gráficos futuramente) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Script Sidebar e Tema -->
+    <script>
+        document.getElementById("toggleSidebar").addEventListener("click", () => {
+            const sidebar = document.querySelector(".sidebar");
+            sidebar.classList.toggle("collapsed");
+            localStorage.setItem("sidebarCollapsed", sidebar.classList.contains("collapsed"));
+        });
+
+        document.getElementById("toggleTheme").addEventListener("click", () => {
+            const body = document.body;
+            body.classList.toggle("dark-theme");
+            localStorage.setItem("theme", body.classList.contains("dark-theme") ? "dark" : "light");
+        });
+    </script>
+
+    <!-- Script Firebase Logout -->
+    <script type="module">
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        const auth = getAuth();
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => {
+                window.location.href = "index.html";
+            });
+        });
+
+        // Exemplo de gráfico inicial (dummy)
+        const ctx = document.getElementById("graficoMensal");
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
+                datasets: [{
+                    label: "Seu progresso",
+                    data: [1500, 1800, 1600, 2000, 2400, 2200]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: true } }
+            }
+        });
+    </script>
+
+</body>
+</html>
