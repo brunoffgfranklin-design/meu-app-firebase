@@ -11,21 +11,24 @@
 
     <main class="login-container">
         <h1>Criar Conta</h1>
+
         <form id="registerForm">
             <input type="email" placeholder="Email" required>
             <input type="password" placeholder="Senha" required>
             <button type="submit" class="btn-primary">Cadastrar</button>
         </form>
-        <p>Já tem conta? <a href="index.html">Entrar</a></p>
-        <button id="toggleTheme">🌓 Alternar Tema</button>
+
+        <p>Já possui conta? <a href="index.html">Entrar</a></p>
+
+        <button id="toggleTheme" class="theme-btn">🌓 Alternar Tema</button>
     </main>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <script>
-        // TODO: Substitua pelo seu firebaseConfig
+        // 🔥 Config Firebase (substitua pelos seus dados)
         const firebaseConfig = {
             apiKey: "SUA_API_KEY",
             authDomain: "SEU_AUTH_DOMAIN",
@@ -38,25 +41,29 @@
 
         const auth = firebase.auth();
 
-        // CRIAR CONTA
+        // 🆕 CRIAR CONTA
         const registerForm = document.getElementById('registerForm');
+
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
+
             const email = registerForm[0].value;
             const password = registerForm[1].value;
 
             auth.createUserWithEmailAndPassword(email, password)
-                .then(userCredential => {
-                    alert('Conta criada com sucesso!');
-                    window.location.href = 'dashboard.html';
+                .then(() => {
+                    alert("Conta criada com sucesso!");
+                    window.location.href = "dashboard.html";
                 })
-                .catch(error => alert(error.message));
+                .catch(err => alert(err.message));
         });
 
-        // Alternar tema escuro/claro
+        // 🌙 Alternar tema
         document.getElementById('toggleTheme').addEventListener('click', () => {
-            document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+            document.body.dataset.theme =
+                document.body.dataset.theme === 'dark' ? 'light' : 'dark';
         });
     </script>
+
 </body>
 </html>
