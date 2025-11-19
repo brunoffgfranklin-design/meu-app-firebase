@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contas Mensais</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <aside class="sidebar">
+        <h2 class="logo">MeuApp</h2>
+        <nav>
+            <a href="dashboard.html">🏠 Início</a>
+            <a href="rendas.html">💰 Rendas</a>
+            <a href="#" class="active">📋 Contas</a>
+            <a href="#">⚙️ Configurações</a>
+            <a href="#">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Contas Mensais</h1>
+            <p>Gerencie suas contas a pagar, pagas e atrasadas</p>
+        </header>
+
+        <section class="form-section">
+            <h2>Adicionar Conta</h2>
+            <form class="form-grid">
+                <input type="text" placeholder="Nome da Conta" required>
+                <input type="number" placeholder="Valor" required>
+                <input type="date" required>
+                <select>
+                    <option value="pendente">Pendente</option>
+                    <option value="pago">Pago</option>
+                    <option value="atrasado">Atrasado</option>
+                </select>
+                <button class="btn-primary" type="submit">Salvar</button>
+            </form>
+        </section>
+
+        <section class="table-section">
+            <h2>Listagem de Contas</h2>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Conta</th>
+                        <th>Valor</th>
+                        <th>Vencimento</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Luz</td>
+                        <td>R$ 120,00</td>
+                        <td>10/11/2025</td>
+                        <td>Pendente</td>
+                        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
+                    </tr>
+                    <tr>
+                        <td>Internet</td>
+                        <td>R$ 89,90</td>
+                        <td>05/11/2025</td>
+                        <td>Pago</td>
+                        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>
