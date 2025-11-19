@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configurações</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tema e Sidebar -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const body = document.body;
+
+            // Recuperar tema
+            const savedTheme = localStorage.getItem("theme") || "light";
+            body.classList.toggle("dark-theme", savedTheme === "dark");
+
+            // Recuperar sidebar colapsada
+            const savedCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+            if (savedCollapsed) document.querySelector(".sidebar")?.classList.add("collapsed");
+        });
+    </script>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">MeuApp</h2>
+        <nav>
+            <a href="dashboard.html">🏠 Início</a>
+            <a href="rendas.html">💰 Rendas</a>
+            <a href="contas.html">📋 Contas</a>
+            <a href="alertas.html">🔔 Alertas</a>
+            <a href="graficos.html">📊 Gráficos</a>
+            <a href="#" class="active">⚙️ Configurações</a>
+            <a href="#" id="logoutBtn">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="dashboard-container">
+
+        <header class="dashboard-header">
+            <button id="toggleSidebar" class="btn-toggle">☰</button>
+            <button id="toggleTheme" class="btn-toggle">🌓</button>
+            <h1>Configurações</h1>
+            <p>Personalize sua experiência</p>
+        </header>
+
+        <!-- DADOS DO USUÁRIO -->
+        <section class="form-section">
+            <h2>Informações da Conta</h2>
+
+            <div class="config-card">
+                <p><strong>Email:</strong> <span id="userEmail">Carregando...</span></p>
+                <p><strong>Status:</strong> <span id="userStatus">Verificando...</span></p>
+            </div>
+        </section>
+
+        <!-- TEMA -->
+        <section class="form-section">
+            <h2>Tema do Aplicativo</h2>
+            <div class="config-card">
+                <button class="btn-primary" id="themeToggleBtn">
+                    Alternar Tema Claro/Escuro 🌓
+                </button>
+            </div>
+        </section>
+
+        <!-- SEGURANÇA -->
+        <section class="form-section">
+            <h2>Segurança</h2>
+            <div class="config-card">
+                <button class="btn-secondary" id="resetPasswordBtn">
+                    Redefinir Senha 🔐
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Firebase Script -->
+    <script type="module">
+        import {
+            getAuth,
+            signOut,
+            sendPasswordResetEmail,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        const auth = getAuth();
+
+        // Exibir email do usuário
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById("userEmail").textContent = user.email;
+                document.getElementById("userStatus").textContent = "Logado";
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // Logout
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => {
+                window.location.href = "index.html";
+            });
+        });
+
+        // Resetar senha
+        document.getElementById("resetPasswordBtn").addEventListener("click", () => {
+            const user = auth.currentUser;
+
+            if (!user) {
+                alert("Erro: nenhum usuário logado.");
+                return;
+            }
+
+            sendPasswordResetEmail(auth, user.email)
+                .then(() => {
+                    alert("Um email para redefinir sua senha foi enviado para: " + user.email);
+                })
+                .catch((error) => {
+                    alert("Erro ao enviar email: " + error.message);
+                });
+        });
+
+        // Tema
+        document.getElementById("themeToggleBtn").addEventListener("click", () => {
+            const body = document.body;
+            body.classList.toggle("dark-theme");
+
+            const newTheme = body.classList.contains("dark-theme") ? "dark" : "light";
+            localStorage.setItem("theme", newTheme);
+        });
+    </script>
+
+    <!-- Sidebar Script -->
+    <script>
+        document.getElementById("toggleSidebar").addEventListener("click", () => {
+            const sidebar = document.querySelector(".sidebar");
+            sidebar.classList.toggle("collapsed");
+            localStorage.setItem("sidebarCollapsed", sidebar.classList.contains("collapsed"));
+        });
+
+        document.getElementById("toggleTheme").addEventListener("click", () => {
+            const body = document.body;
+            body.classList.toggle("dark-theme");
+            localStorage.setItem("theme", body.classList.contains("dark-theme") ? "dark" : "light");
+        });
+    </script>
+
+</body>
+
+</html>
