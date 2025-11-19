@@ -1,63 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard - Controle Financeiro</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body" data-theme="light">
 
-    <!-- MENU LATERAL -->
+    <!-- Sidebar -->
     <aside class="sidebar">
-        <div class="logo">💰 CF</div>
-
+        <button id="toggleSidebar">☰</button>
+        <h2 class="logo">MeuApp</h2>
         <nav>
-            <a href="dashboard.html" class="active">📊 Dashboard</a>
-            <a href="rendas.html">💵 Rendas</a>
-            <a href="contas.html">🧾 Contas Mensais</a>
-            <a href="alertas.html">⏰ Alertas</a>
-            <a href="graficos.html">📈 Gráficos</a>
+            <a href="dashboard.html" class="active">🏠 Início</a>
+            <a href="rendas.html">💰 Rendas</a>
+            <a href="contas.html">📋 Contas</a>
+            <a href="#">⚙️ Configurações</a>
+            <a href="#">🚪 Sair</a>
         </nav>
-
-        <button class="logout-btn">Sair</button>
+        <button id="toggleTheme">🌓</button>
     </aside>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <main class="main-container">
+    <!-- Main Content -->
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Dashboard</h1>
+            <p>Resumo financeiro mensal</p>
+        </header>
 
-        <h1 class="page-title">Dashboard</h1>
-
-        <div class="cards">
-            <div class="card">
-                <h3>Renda Total</h3>
-                <p class="valor">R$ 0,00</p>
-            </div>
-
-            <div class="card">
-                <h3>Despesas Previstas</h3>
-                <p class="valor">R$ 0,00</p>
-            </div>
-
-            <div class="card">
-                <h3>Despesas Pagas</h3>
-                <p class="valor">R$ 0,00</p>
-            </div>
-
-            <div class="card highlight">
-                <h3>Saldo do Mês</h3>
-                <p class="valor">R$ 0,00</p>
-            </div>
-        </div>
-
-        <section class="lista-section">
-            <h2>Próximos vencimentos</h2>
-            <ul class="lista-vencimentos" id="listaVencimentos">
-                <!-- preenchido via JS futuramente -->
-            </ul>
+        <section class="summary-section">
+            <div class="card">Total Contas: R$ 500</div>
+            <div class="card">Total Rendas: R$ 1.200</div>
+            <div class="card">Saldo: R$ 700</div>
         </section>
 
+        <section class="chart-section">
+            <h2>Evolução Financeira</h2>
+            <canvas id="financeChart" width="400" height="200"></canvas>
+        </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('financeChart').getContext('2d');
+        const financeChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Janeiro', 'Fevereiro', 'Março'],
+                datasets: [{
+                    label: 'Despesas',
+                    data: [500, 450, 700],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },{
+                    label: 'Rendas',
+                    data: [1200, 1100, 1300],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true }
+        });
+
+        // Sidebar toggle
+        const sidebar = document.querySelector('.sidebar');
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // Theme toggle
+        document.getElementById('toggleTheme').addEventListener('click', () => {
+            document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        });
+    </script>
 </body>
 </html>
