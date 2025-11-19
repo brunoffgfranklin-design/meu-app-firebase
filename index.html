@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Controle Financeiro</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-box">
-            <h1>Entrar</h1>
+<body class="login-body" data-theme="light">
 
-            <input type="text" placeholder="Usuário" class="input-field" />
-            <input type="password" placeholder="Senha" class="input-field" />
+    <main class="login-container">
+        <h1>MeuApp</h1>
+        <form id="loginForm">
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Senha" required>
+            <button type="submit" class="btn-primary">Entrar</button>
+        </form>
+        <p>Não tem conta? <a href="criar-conta.html">Cadastrar-se</a></p>
+        <button id="toggleTheme">🌓 Alternar Tema</button>
+    </main>
 
-            <button class="login-btn">Confirmar</button>
-
-            <div class="login-links">
-                <a href="#">Esqueceu a senha?</a>
-                <a href="#">Criar conta</a>
-            </div>
-        </div>
-    </div>
+    <script>
+        // Theme toggle
+        document.getElementById('toggleTheme').addEventListener('click', () => {
+            document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        });
+    </script>
 </body>
 </html>
