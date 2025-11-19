@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Perfil</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Aplica tema salvo e sidebar colapsada -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const body = document.body;
+            const savedTheme = localStorage.getItem("theme") || "light";
+            body.classList.toggle("dark-theme", savedTheme === "dark");
+
+            const savedCollapse = localStorage.getItem("sidebarCollapsed") === "true";
+            if (savedCollapse) document.querySelector(".sidebar")?.classList.add("collapsed");
+        });
+    </script>
+</head>
+
+<body class="dashboard-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <h2 class="logo">MeuApp</h2>
+        <nav>
+            <a href="dashboard.html">🏠 Início</a>
+            <a href="rendas.html">💰 Rendas</a>
+            <a href="contas.html">📋 Contas</a>
+            <a href="alertas.html">🔔 Alertas</a>
+            <a href="graficos.html">📊 Gráficos</a>
+            <a href="configuracoes.html">⚙️ Configurações</a>
+            <a href="#" class="active">👤 Perfil</a>
+            <a href="#" id="logoutBtn">🚪 Sair</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="dashboard-container">
+
+        <header class="dashboard-header">
+            <button id="toggleSidebar" class="btn-toggle">☰</button>
+            <button id="toggleTheme" class="btn-toggle">🌓</button>
+            <h1>Meu Perfil</h1>
+            <p>Gerencie suas informações pessoais</p>
+        </header>
+
+        <!-- PERFIL DO USUÁRIO -->
+        <section class="form-section">
+            <h2>Informações do Usuário</h2>
+
+            <div class="profile-card">
+
+                <div class="profile-photo-container">
+                    <img id="profilePhoto" class="profile-photo" src="https://via.placeholder.com/150" alt="Foto do usuário">
+                    <input type="file" id="photoInput" accept="image/*" />
+                </div>
+
+                <div class="profile-info">
+                    <label>Nome completo</label>
+                    <input type="text" id="userName" placeholder="Seu nome">
+
+                    <label>Email</label>
+                    <input type="text" id="userEmail" disabled>
+
+                    <button class="btn-primary" id="saveProfileBtn">Salvar Alterações</button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Firebase Auth + Firestore -->
+    <script type="module">
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        import {
+            getFirestore,
+            doc,
+            getDoc,
+            setDoc
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const auth = getAuth();
+        const db = getFirestore();
+
+        const userNameInput = document.getElementById("userName");
+        const userEmailInput = document.getElementById("userEmail");
+        const profilePhoto = document.getElementById("profilePhoto");
+        const photoInput = document.getElementById("photoInput");
+
+        // Carregar dados do Firestore
+        async function loadProfileData(uid) {
+            const ref = doc(db, "usuarios", uid);
+            const snap = await getDoc(ref);
+
+            if (snap.exists()) {
+                const data = snap.data();
+
+                if (data.nome) userNameInput.value = data.nome;
+                if (data.foto) profilePhoto.src = data.foto;
+            }
+        }
+
+        // Salvar dados no Firestore
+        async function saveProfileData(uid, data) {
+            await setDoc(doc(db, "usuarios", uid), data, { merge: true });
+        }
+
+        // Aguardar autenticação
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            userEmailInput.value = user.email;
+
+            await loadProfileData(user.uid);
+        });
+
+        // Upload da foto (base64 simples)
+        photoInput.addEventListener("change", () => {
+            const file = photoInput.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = () => (profilePhoto.src = reader.result);
+            reader.readAsDataURL(file);
+        });
+
+        // Salvando perfil
+        document.getElementById("saveProfileBtn").addEventListener("click", async () => {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const nome = userNameInput.value.trim();
+            const foto = profilePhoto.src;
+
+            // Firebase Auth (apenas nome e foto)
+            await updateProfile(user, {
+                displayName: nome,
+                photoURL: foto
+            });
+
+            // Firestore
+            await saveProfileData(user.uid, {
+                nome,
+                foto
+            });
+
+            alert("Perfil atualizado com sucesso!");
+        });
+
+        // Logout
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            signOut(auth).then(() => window.location.href = "index.html");
+        });
+
+    </script>
+
+    <!-- Sidebar + Tema -->
+    <script>
+        document.getElementById("toggleSidebar").addEventListener("click", () => {
+            const sidebar = document.querySelector(".sidebar");
+            sidebar.classList.toggle("collapsed");
+            localStorage.setItem("sidebarCollapsed", sidebar.classList.contains("collapsed"));
+        });
+
+        document.getElementById("toggleTheme").addEventListener("click", () => {
+            const body = document.body;
+            body.classList.toggle("dark-theme");
+            localStorage.setItem("theme", body.classList.contains("dark-theme") ? "dark" : "light");
+        });
+    </script>
+
+</body>
+
+</html>
