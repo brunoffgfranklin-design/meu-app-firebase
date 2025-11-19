@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rendas</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-theme">
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
+        <div class="logo">FinanceFlow</div>
+        <nav>
+            <a href="dashboard.html">📊 Dashboard</a>
+            <a class="active" href="rendas.html">💰 Rendas</a>
+            <a href="contas.html">🧾 Contas</a>
+            <a href="alertas.html">⏰ Alertas</a>
+            <a href="graficos.html">📈 Gráficos</a>
+        </nav>
+        <button id="logoutBtn" class="logout-btn">Sair</button>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="content">
+        <h1 class="page-title">Rendas</h1>
+
+        <section class="card">
+            <h2>Adicionar Renda</h2>
+            <div class="form-group">
+                <label>Tipo de Renda</label>
+                <select id="tipoRenda">
+                    <option value="principal">Renda Principal</option>
+                    <option value="secundaria">Renda Secundária</option>
+                    <option value="outras">Outras Rendas</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Descrição</label>
+                <input type="text" id="descricaoRenda" placeholder="Ex: Salário, Freelance..." />
+            </div>
+
+            <div class="form-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="valorRenda" />
+            </div>
+
+            <button id="salvarRendaBtn" class="btn-primary">Salvar Renda</button>
+        </section>
+
+        <section class="card">
+            <h2>Rendas Registradas</h2>
+            <table class="tabela">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="listaRendas"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="firebase-config.js"></script>
+    <script src="rendas.js"></script>
+</body>
+</html>
