@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rendas</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="dashboard-body" data-theme="light">
 
@@ -51,25 +52,105 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Salário</td>
-                        <td>R$ 3.000,00</td>
-                        <td>01/11/2025</td>
-                        <td><button class="btn-edit">Editar</button> <button class="btn-delete">Excluir</button></td>
-                    </tr>
+                    <!-- As rendas serão carregadas do Firestore -->
                 </tbody>
             </table>
         </section>
     </main>
 
+    <!-- Scripts Firebase e lógica Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script>
+        // Inicializar Firestore
+        const db = firebase.firestore();
+
+        const form = document.querySelector('.form-grid');
+        const tbody = document.querySelector('.styled-table tbody');
+
+        // Função para carregar todas as rendas
+        function loadRendas() {
+            tbody.innerHTML = '';
+            db.collection('rendas').get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${data.descricao}</td>
+                            <td>R$ ${data.valor.toFixed(2)}</td>
+                            <td>${data.data}</td>
+                            <td>
+                                <button class="btn-edit" onclick="editRenda('${doc.id}')">Editar</button>
+                                <button class="btn-delete" onclick="deleteRenda('${doc.id}')">Excluir</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
+        loadRendas();
+
+        // Adicionar nova renda
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const descricao = form[0].value;
+            const valor = parseFloat(form[1].value);
+            const data = form[2].value;
+
+            db.collection('rendas').add({ descricao, valor, data })
+                .then(() => {
+                    alert('Renda adicionada!');
+                    form.reset();
+                    loadRendas();
+                })
+                .catch(error => console.error("Erro ao adicionar renda:", error));
+        });
+
+        // Deletar renda
+        function deleteRenda(id) {
+            if(confirm('Deseja realmente excluir esta renda?')) {
+                db.collection('rendas').doc(id).delete().then(() => loadRendas());
+            }
+        }
+
+        // Editar renda
+        function editRenda(id) {
+            db.collection('rendas').doc(id).get().then(doc => {
+                const data = doc.data();
+                form[0].value = data.descricao;
+                form[1].value = data.valor;
+                form[2].value = data.data;
+
+                form.onsubmit = (e) => {
+                    e.preventDefault();
+                    db.collection('rendas').doc(id).update({
+                        descricao: form[0].value,
+                        valor: parseFloat(form[1].value),
+                        data: form[2].value
+                    }).then(() => {
+                        alert('Renda atualizada!');
+                        form.reset();
+                        form.onsubmit = defaultSubmit;
+                        loadRendas();
+                    });
+                };
+            });
+        }
+
+        const defaultSubmit = form.onsubmit;
+
+        // =========================
         // Sidebar toggle
+        // =========================
         const sidebar = document.querySelector('.sidebar');
         document.getElementById('toggleSidebar').addEventListener('click', () => {
             sidebar.classList.toggle('collapsed');
         });
 
+        // =========================
         // Theme toggle
+        // =========================
         document.getElementById('toggleTheme').addEventListener('click', () => {
             document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
         });
