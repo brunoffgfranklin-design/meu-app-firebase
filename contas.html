@@ -90,5 +90,90 @@
             document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
         });
     </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const db = firebase.firestore();
+
+  const form = document.querySelector('.form-grid');
+  const tbody = document.querySelector('.styled-table tbody');
+
+  // Enviar formulário
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const conta = form[0].value;
+    const valor = parseFloat(form[1].value);
+    const vencimento = form[2].value;
+    const status = form[3].value;
+
+    db.collection('contas').add({ conta, valor, vencimento, status })
+      .then(docRef => {
+        alert('Conta adicionada!');
+        form.reset();
+        loadContas();
+      })
+      .catch(error => console.error("Erro ao adicionar conta:", error));
+  });
+
+  // Carregar contas
+  function loadContas() {
+    tbody.innerHTML = '';
+    db.collection('contas').get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        tbody.innerHTML += `
+          <tr>
+            <td>${data.conta}</td>
+            <td>R$ ${data.valor.toFixed(2)}</td>
+            <td>${data.vencimento}</td>
+            <td>${data.status}</td>
+            <td>
+              <button class="btn-edit" onclick="editConta('${doc.id}')">Editar</button>
+              <button class="btn-delete" onclick="deleteConta('${doc.id}')">Excluir</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+  }
+
+  loadContas();
+
+  function deleteConta(id) {
+    if(confirm('Deseja realmente excluir essa conta?')) {
+      db.collection('contas').doc(id).delete().then(() => loadContas());
+    }
+  }
+
+  function editConta(id) {
+    db.collection('contas').doc(id).get().then(doc => {
+      const data = doc.data();
+      form[0].value = data.conta;
+      form[1].value = data.valor;
+      form[2].value = data.vencimento;
+      form[3].value = data.status;
+
+      // Atualizar documento ao enviar
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        db.collection('contas').doc(id).update({
+          conta: form[0].value,
+          valor: parseFloat(form[1].value),
+          vencimento: form[2].value,
+          status: form[3].value
+        }).then(() => {
+          alert('Conta atualizada!');
+          form.reset();
+          form.onsubmit = defaultSubmit;
+          loadContas();
+        });
+      };
+    });
+  }
+
+  const defaultSubmit = form.onsubmit;
+</script>
 </body>
 </html>
