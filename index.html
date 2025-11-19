@@ -1,74 +1,61 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - MeuApp</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-</head>
-<body class="login-body" data-theme="light">
+<script type="module">
+    import {
+        getAuth,
+        signInWithEmailAndPassword,
+        GoogleAuthProvider,
+        signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    <main class="login-container">
-        <h1>MeuApp</h1>
+    import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-        <form id="loginForm">
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Senha" required>
-            <button type="submit" class="btn-primary">Entrar</button>
-        </form>
+    const auth = getAuth();
+    const db = getFirestore();
 
-        <p>Não tem conta? <a href="criar-conta.html">Cadastrar-se</a></p>
-<button id="googleLoginBtn" class="btn-google">
-    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-         alt="Google Icon">
-    Entrar com Google
-</button>
+    // Login tradicional (email/senha)
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-        <button id="toggleTheme" class="theme-btn">🌓 Alternar Tema</button>
-    </main>
+        const email = document.getElementById("email").value.trim();
+        const senha = document.getElementById("password").value.trim();
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+        try {
+            await signInWithEmailAndPassword(auth, email, senha);
+            window.location.href = "dashboard.html";
+        } catch (error) {
+            alert("Erro no login: " + error.message);
+        }
+    });
 
-    <script>
-        // 🔥 Config Firebase (substitua pelos seus dados)
-        const firebaseConfig = {
-            apiKey: "SUA_API_KEY",
-            authDomain: "SEU_AUTH_DOMAIN",
-            projectId: "SEU_PROJECT_ID",
-            storageBucket: "SEU_STORAGE_BUCKET",
-            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-            appId: "SEU_APP_ID"
-        };
-        firebase.initializeApp(firebaseConfig);
+    // Login com Google
+    const googleProvider = new GoogleAuthProvider();
 
-        const auth = firebase.auth();
+    document.getElementById("googleLoginBtn").addEventListener("click", async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+            const user = result.user;
 
-        // 🔐 LOGIN
-        const loginForm = document.getElementById('loginForm');
+            // Criar registro no Firestore se ainda não existir
+            const ref = doc(db, "usuarios", user.uid);
+            const snap = await getDoc(ref);
 
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            if (!snap.exists()) {
+                await setDoc(ref, {
+                    nome: user.displayName || "",
+                    email: user.email,
+                    foto: user.photoURL || "",
+                    criadoEm: new Date()
+                });
+            }
 
-            const email = loginForm[0].value;
-            const password = loginForm[1].value;
+            window.location.href = "dashboard.html";
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    window.location.href = "dashboard.html";
-                })
-                .catch(err => alert(err.message));
-        });
-
-        // 🌙 Alternar tema
-        document.getElementById('toggleTheme').addEventListener('click', () => {
-            document.body.dataset.theme =
-                document.body.dataset.theme === 'dark' ? 'light' : 'dark';
-        });
-    </script>
-
-</body>
-</html>
-
+        } catch (error) {
+            alert("Erro ao entrar com Google: " + error.message);
+        }
+    });
+</script>
