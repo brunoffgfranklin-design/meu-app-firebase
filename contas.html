@@ -7,18 +7,23 @@
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="dashboard-body">
+<body class="dashboard-body" data-theme="light">
+
+    <!-- Sidebar -->
     <aside class="sidebar">
+        <button id="toggleSidebar">☰</button>
         <h2 class="logo">MeuApp</h2>
         <nav>
             <a href="dashboard.html">🏠 Início</a>
             <a href="rendas.html">💰 Rendas</a>
-            <a href="#" class="active">📋 Contas</a>
+            <a href="contas.html" class="active">📋 Contas</a>
             <a href="#">⚙️ Configurações</a>
             <a href="#">🚪 Sair</a>
         </nav>
+        <button id="toggleTheme">🌓</button>
     </aside>
 
+    <!-- Main Content -->
     <main class="dashboard-container">
         <header class="dashboard-header">
             <h1>Contas Mensais</h1>
@@ -71,5 +76,19 @@
             </table>
         </section>
     </main>
+
+    <!-- Scripts -->
+    <script>
+        // Toggle Sidebar
+        const sidebar = document.querySelector('.sidebar');
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // Toggle Dark/Light Theme
+        document.getElementById('toggleTheme').addEventListener('click', () => {
+            document.body.dataset.theme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+        });
+    </script>
 </body>
 </html>
