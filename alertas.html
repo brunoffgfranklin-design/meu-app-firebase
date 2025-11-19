@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas - MeuApp</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="dashboard-body" data-theme="light">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <button id="toggleSidebar">☰</button>
+        <h2 class="logo">MeuApp</h2>
+
+        <nav>
+            <a href="dashboard.html">🏠 Início</a>
+            <a href="rendas.html">💰 Rendas</a>
+            <a href="contas.html">📋 Contas</a>
+            <a href="alertas.html" class="active">🔔 Alertas</a>
+            <a href="graficos.html">📊 Gráficos</a>
+            <a href="#" id="logoutBtn">🚪 Sair</a>
+        </nav>
+
+        <button id="toggleTheme">🌓 Tema</button>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Alertas</h1>
+            <p>Veja suas contas vencidas e próximas do vencimento</p>
+        </header>
+
+        <!-- CARDS DE ALERTAS -->
+        <section class="alert-cards">
+            <div class="alert-card red" id="vencidasCard">
+                <h3>🔴 Contas Vencidas</h3>
+                <p id="vencidasQtd">0 contas</p>
+            </div>
+
+            <div class="alert-card yellow" id="avencerCard">
+                <h3>🟡 Vencem em até 5 dias</h3>
+                <p id="avencerQtd">0 contas</p>
+            </div>
+
+            <div class="alert-card green" id="pagasCard">
+                <h3>🟢 Pagas Recentemente</h3>
+                <p id="pagasQtd">0 contas</p>
+            </div>
+        </section>
+
+        <!-- LISTA DETALHADA -->
+        <section class="table-section">
+            <h2>Detalhamento</h2>
+
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Conta</th>
+                        <th>Valor</th>
+                        <th>Vencimento</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="alertasLista">
+                    <!-- Populado pelo Firestore -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // CONFIG FIREBASE (substitua seus dados)
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_AUTH_DOMAIN",
+            projectId: "SEU_PROJECT_ID",
+            storageBucket: "SEU_STORAGE_BUCKET",
+            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // VERIFICA USUÁRIO LOGADO
+        auth.onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = "index.html";
+            }
+        });
+
+        // BOTÃO DE SAIR
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            auth.signOut();
+        });
+
+        // ========================
+        // LÓGICA DOS ALERTAS
+        // ========================
+        const hoje = new Date();
+        const MS_POR_DIA = 1000 * 60 * 60 * 24;
+
+        const vencidas = [];
+        const vencer5dias = [];
+        const pagasRecentes = [];
+        const alertaLista = document.getElementById("alertasLista");
+
+        db.collection("contas").get().then(snapshot => {
+
+            snapshot.forEach(doc => {
+                const conta = doc.data();
+                const dataVenc = new Date(conta.vencimento);
+                const diffDias = Math.floor((dataVenc - hoje) / MS_POR_DIA);
+
+                // Classificação dos alertas
+                if (conta.status === "atrasado" || dataVenc < hoje) {
+                    vencidas.push(conta);
+                }
+                if (diffDias >= 0 && diffDias <= 5 && conta.status === "pendente") {
+                    vencer5dias.push(conta);
+                }
+                if (conta.status === "pago") {
+                    pagasRecentes.push(conta);
+                }
+            });
+
+            // Atualizar contadores
+            document.getElementById("vencidasQtd").innerText = `${vencidas.length} contas`;
+            document.getElementById("avencerQtd").innerText = `${vencer5dias.length} contas`;
+            document.getElementById("pagasQtd").innerText = `${pagasRecentes.length} contas`;
+
+            // Listar todas juntas
+            const todas = [...vencidas, ...vencer5dias, ...pagasRecentes];
+
+            todas.forEach(c => {
+                alertaLista.innerHTML += `
+                    <tr>
+                        <td>${c.nome}</td>
+                        <td>R$ ${c.valor.toFixed(2)}</td>
+                        <td>${c.vencimento}</td>
+                        <td>${c.status.toUpperCase()}</td>
+                    </tr>
+                `;
+            });
+        });
+
+        // =====================
+        // Sidebar toggle
+        // =====================
+        const sidebar = document.querySelector('.sidebar');
+        document.getElementById('toggleSidebar').addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        // =====================
+        // Theme toggle
+        // =====================
+        document.getElementById("toggleTheme").addEventListener("click", () => {
+            document.body.dataset.theme =
+                document.body.dataset.theme === "dark" ? "light" : "dark";
+        });
+    </script>
+
+</body>
+</html>
